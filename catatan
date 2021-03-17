@@ -1,0 +1,25 @@
+1. Prioritas : 
+    A. Kirim Disposisi
+        - Untuk kirim disposisi pada field disposisikan kepada itu mengirim ke email dan menginsertkan datanya ke database
+    Serta buat history Untuk proses kirim disposisi diatas.
+    B. Disposisi Masuk
+        - Accept => 1
+        - Lapor => 2 & 3
+        - Disposisi diteruskan => 1 & 2 & 3
+    C. Disposisi Tindak Lanjut
+        - Rincian
+        - Rincian Accept
+        
+2. Lanjutan : 
+    Untuk A.disposisi masuk dan B.tindak lanjut hanya dimiliki oleh atasan yang bertanggung jawab (Untuk sementara digabungkan)
+C.disposisi instruksi dan D.kirim disposisi serta A & B dimiliki oleh admin
+
+File Konfigurasi koneksi :
+    A. koneksi => native
+    B. konek   => PDO
+    C. tampil  => semi-native
+    D. talikuat => semi-native
+    E. loghistory => semi-native
+
+Jika data umum tidak muncul tambahkan perintah berikut : 
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));

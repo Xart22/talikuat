@@ -1,0 +1,14 @@
+# File yang di ignore 
+assets/
+css/
+dist/
+docs/
+dompdf/
+konfigurasi/
+lampiran/
+mysql/
+pages/
+plugins/
+Resources/
+testing/
+ViewrJS/
