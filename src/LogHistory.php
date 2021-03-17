@@ -28,7 +28,7 @@ class LogHistory {
         $date = date('h:i:s'); //jam
 
         if($refresh) {
-            echo "Page refresh no history";
+            // Page refresh no history
         } else {
             $sql = "INSERT INTO ".$this->menu_log." (id_login_user, catatan_menu, jam) VALUES ($id_logged, '$menu','$date')";
             $query = mysqli_query($this->dbConnect, $sql);

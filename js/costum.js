@@ -37,10 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Attach the handler
   table.addEventListener("mousedown", mouseDownHandler);
-
-  function testing(el) {
-    console.log(el);
-  }
 });
 
 function hpsData() {

@@ -176,17 +176,32 @@ class talikuat{
 //---------------power user-------------------
 	function data_umum(){
 				//$sql = "select * from data_umum";
-		$sqlQuery="
-			select 	*,
+		// $sqlQuery="
+		// 	select 	*,
+		// 			data_umum.id AS datumid, 
+		// 			GROUP_CONCAT(ruas_jalan) as ruas_jalan from ".$this->data_umum." 
+		// 	JOIN ".$this->data_umum_ruas." 
+		// 	on ".$this->data_umum.".id=".$this->data_umum_ruas.".id 
+		// 	JOIN ".$this->kategori_paket."
+		// 	on ".$this->kategori_paket.".id = ".$this->data_umum.".kategori
+		// 	JOIN ".$this->kantor." 
+		// 	on ".$this->kantor.".id_kantor = ".$this->data_umum.".unor
+		// 	group by ".$this->data_umum. ".id 
+		// 	order by " . $this->data_umum . ".id DESC";
+		$sqlQuery = "
+			SELECT *,
 					data_umum.id AS datumid, 
-					GROUP_CONCAT(ruas_jalan) as ruas_jalan from ".$this->data_umum." 
-			JOIN ".$this->data_umum_ruas." 
-			on ".$this->data_umum.".id=".$this->data_umum_ruas.".id 
-			JOIN ".$this->kategori_paket."
-			on ".$this->kategori_paket.".id = ".$this->data_umum.".kategori
-			JOIN ".$this->kantor." 
-			on ".$this->kantor.".id_kantor = ".$this->data_umum.".unor
-			group by ".$this->data_umum.".id ";
+		 			GROUP_CONCAT(" . $this->data_umum_ruas . ".ruas_jalan) as ruas_jalan 
+			FROM ". $this->data_umum ." 
+				JOIN " . $this->data_umum_ruas . " ON data_umum_ruas.id = " . $this->data_umum . ".id
+				JOIN " . $this->kategori_paket . " ON kategori_paket.id = " . $this->data_umum . ".kategori
+				JOIN " . $this->kantor . " ON ". $this->kantor .".id_kantor = " . $this->data_umum . ".unor
+				GROUP BY
+					" . $this->data_umum . ".id 
+				ORDER BY 
+					" . $this->data_umum . ".id
+				DESC
+		";
 			// die($sqlQuery); 
 		return $this->getData($sqlQuery);
 	}
@@ -248,7 +263,9 @@ class talikuat{
 					 INNER JOIN " . $this->jadual . " 
 					 ON " . $this->jadual_detail . ".`id` = " . $this->jadual . ".`id` 
 					 INNER JOIN ".$this->kantor." 
-					 ON ".$this->kantor.".id_kantor = ".$this->jadual.".unor";
+					 ON ".$this->kantor.".id_kantor = ".$this->jadual.".unor
+					 GROUP BY ".$this->jadual.".id
+					 ORDER BY ".$this->jadual.".id DESC";
 					//  die($sqlQuery);
 		return $this->getData($sqlQuery);
 	}
@@ -365,19 +382,52 @@ class talikuat{
 						where ".$this->master_laporan_harian.".unor='".$_SESSION['unit']."' ";
 		return $this->getData($sqlQuery);
 	}
-									
 
-	public function get_data_umum($data_umum){
+
+	// public function get_data_umum($data_umum){
+	// 	$sqlQuery = "
+	// 		SELECT * FROM ".$this->data_umum." 
+	// 		JOIN ".$this->kantor." ON ".$this->kantor.".id_kantor = ".$this->data_umum.".unor
+	// 		WHERE id = '$data_umum'";
+	// 		// die($sqlQuery);
+	// 	$result = mysqli_query($this->dbConnect, $sqlQuery);
+	// 	$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+	// 	return $row;
+	// }
+
+	// public function get_data_umum($data_umum)
+	// {
+	// 	$sqlQuery = "
+	// 		SELECT *, jadual.id AS idj FROM " . $this->data_umum . " 
+	// 		JOIN " . $this->kantor . " ON " . $this->kantor . ".id_kantor = " . $this->data_umum . ".unor
+	// 		JOIN " . $this->jadual . " ON " . $this->jadual . ".kegiatan = " . $this->data_umum . ".nama_kegiatan
+	// 		WHERE data_umum.id = '$data_umum'";
+	// 	// die($sqlQuery);
+	// 	$result = mysqli_query($this->dbConnect, $sqlQuery);
+	// 	$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+	// 	return $row;
+	// }
+
+	public function get_data_umum($data_umum) {
 		$sqlQuery = "
-			SELECT * FROM ".$this->data_umum." 
-			JOIN ".$this->kantor." ON ".$this->kantor.".id_kantor = ".$this->data_umum.".unor
-			WHERE id = '$data_umum'";
-			// die($sqlQuery);
+			SELECT *,
+					data_umum.id AS datumid, 
+		 			GROUP_CONCAT(" . $this->data_umum_ruas . ".ruas_jalan) as ruas_jalan 
+			FROM " . $this->data_umum . " 
+				JOIN " . $this->data_umum_ruas . " ON data_umum_ruas.id = " . $this->data_umum . ".id
+				JOIN " . $this->kategori_paket . " ON kategori_paket.id = " . $this->data_umum . ".kategori
+				JOIN " . $this->kantor . " ON " . $this->kantor . ".id_kantor = " . $this->data_umum . ".unor
+				GROUP BY
+					" . $this->data_umum . ".id 
+				ORDER BY 
+					" . $this->data_umum . ".id
+				DESC
+		";
+
 		$result = mysqli_query($this->dbConnect, $sqlQuery);
 		$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
 		return $row;
 	}
-
 
 	public function get_data_umum_detail($detail){
 		$sqlQuery = "
@@ -402,7 +452,15 @@ class talikuat{
 	}
 
 	public function get_all_jadual(){
-		$sqlQuery = "SELECT * FROM jadual WHERE 1";
+		$sqlQuery = "SELECT DISTINCT kegiatan FROM " . $this->jadual;
+		$result = mysqli_query($this->dbConnect, $sqlQuery);
+
+		return $result;
+	}
+
+	public function by_jadual($kegiatan)
+	{
+		$sqlQuery = "SELECT DISTINCT kegiatan FROM " . $this->jadual . " WHERE kegiatan = '".$kegiatan."'";
 		$result = mysqli_query($this->dbConnect, $sqlQuery);
 
 		return $result;
@@ -494,12 +552,14 @@ class talikuat{
 		// die(mysqli_error($this->dbConnect));
 		
 		$lastInsertId = mysqli_insert_id($this->dbConnect);
+		// die($lastInsertId);
 		
 		for ($i = 0; $i < count($POST['ruas_jalan']); $i++) {
 			$sqlInsert_ruas = "
 			INSERT INTO ".$this->data_umum_ruas."(id,ruas_jalan,lat_awal,long_awal,lat_akhir,long_akhir,segmen_jalan) 
 			VALUES ('".$lastInsertId."', '".$POST['ruas_jalan'][$i]."', '".$POST['lat_awal'][$i]."', '".$POST['long_awal'][$i]."', '".$POST['lat_akhir'][$i]."', '".$POST['long_akhir'][$i]."','".$POST['segmen_jalan'][$i]."')";				
 			mysqli_query($this->dbConnect, $sqlInsert_ruas);
+			// die(mysqli_error($this->dbConnect));
 		};
 	
 		echo '<script>window.location="../admin/data_umum.php?sukses=tambah-data"</script>';
@@ -659,17 +719,21 @@ echo '<script>window.location="../kontraktor/data_umum.php?sukses=update-data"</
 //=======================================================================Simpan Jadual
 	public function saveJadual($POST) {
 //==================================================================Jadual=========================================================================
-		
+		$tgl = date("Y-m-d");
+		$sqlInsert = "
+			INSERT INTO " . $this->jadual . "(satuan,nama_ppk,unor,harga_satuan,volume,nilai_kontrak,jumlah_harga,bobot,id_data_umum,nmp,user,kegiatan,ruas_jalan,waktu_pelaksanaan,panjang,ppk,nama_penyedia,konsultan,tgl_input, tgl_update) 
+			VALUES ('" . $POST['satuan1'] . "','" . $POST['nama_ppk'] . "'," . $POST['id_unor'] . ",'" . $POST['harga_satuan1'] . "','" . $POST['volume1'] . "','" . $POST['nilai_kontrak'] . "','" . $POST['jumlah_harga1'] . "','" . $POST['bobot1'] . "','" . $POST['id_data_umum'] . "'," . $POST['nmp'] . ",'" . $POST['userId'] . "', '" . $POST['kegiatan'] . "', '" . $POST['ruas_jalan'] . "', " . $POST['waktu'] . ", '" . $POST['panjang'] . "','" . $POST['ppk'] . "', '" . $POST['nama_penyedia'] . "','" . $POST['konsultan'] . "', '" . $tgl . "', '0000-00-00')";
+		// die($sqlInsert);
+		$jadual = mysqli_query($this->dbConnect, $sqlInsert);
 
 //==================================================================Detail Jadual=========================================================================
 		//do something with code...;
-		$reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($_FILES['fileexcel']['tmp_name']);
-		 $reader->setReadDataOnly(true);
-		 $spreadsheet = $reader->load($_FILES['fileexcel']['tmp_name']);
-		 $sheetData = $spreadsheet->getActiveSheet();
-		 var_dump($sheetData);
+		$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
 
-		$jadual = $_POST['jadual'];
+		$spreadsheet = $reader->load($_FILES['fileexcel']['tmp_name']);
+		$sheetData = $spreadsheet->getActiveSheet()->toArray();
+
+		$jadualid = $_POST['jadual'];
 
 		for ($i = 1; $i < count($sheetData); $i++) {
 			$tanggal = $sheetData[$i]['0'];
@@ -697,7 +761,7 @@ echo '<script>window.location="../kontraktor/data_umum.php?sukses=update-data"</
 			$nilai = $sheetData[$i]['9'];
 
 			$sql = "INSERT INTO detail_jadual(id_jadual, tgl, nmp, uraian, satuan, harga_satuan, volume, jumlah_harga, bobot, koefisien, nilai) 
-                    VALUES ($jadual,'$tgl','$nmp','$uraian','$satuan',$hsatuan,$volume,$jumharga,$bobot,$koefisien,$nilai)";
+                    VALUES ($jadualid,'$tgl','$nmp','$uraian','$satuan',$hsatuan,$volume,$jumharga,$bobot,$koefisien,$nilai)";
 
 			// echo($sql);
 			$execute = mysqli_query($this->dbConnect, $sql);
@@ -719,12 +783,7 @@ echo '<script>window.location="../kontraktor/data_umum.php?sukses=update-data"</
 		// die($sqlInsert);
 //==================================================================Detail Jadual=========================================================================		
 		$lastInsertId = mysqli_insert_id($this->dbConnect);
-		$tgl = date("Y-m-d");
-		$sqlInsert = "
-			INSERT INTO " . $this->jadual . "(satuan,nama_ppk,unor,harga_satuan,volume,nilai_kontrak,jumlah_harga,bobot,id_data_umum,nmp,user,kegiatan,ruas_jalan,waktu_pelaksanaan,panjang,ppk,nama_penyedia,konsultan,tgl_input, tgl_update) 
-			VALUES ('" . $POST['satuan1'] . "','" . $POST['nama_ppk'] . "'," . $POST['id_unor'] . ",'" . $POST['harga_satuan1'] . "','" . $POST['volume1'] . "','" . $POST['nilai_kontrak'] . "','" . $POST['jumlah_harga1'] . "','" . $POST['bobot1'] . "','" . $POST['id_data_umum'] . "'," . $POST['nmp'] . ",'" . $POST['userId'] . "', '" . $POST['kegiatan'] . "', '" . $POST['ruas_jalan'] . "', " . $POST['waktu'] . ", '" . $POST['panjang'] . "','" . $POST['ppk'] . "', '" . $POST['nama_penyedia'] . "','" . $POST['konsultan'] . "', '" . $tgl . "', '0000-00-00')";
-		// die($sqlInsert);
-		$jadual = mysqli_query($this->dbConnect, $sqlInsert);
+		
 		
 		// for ($i = 0; $i < count($POST['nmp']); $i++) {
 		// 	$sqlInsertItem_jadual = "
@@ -733,7 +792,7 @@ echo '<script>window.location="../kontraktor/data_umum.php?sukses=update-data"</
 		// 	mysqli_query($this->dbConnect, $sqlInsertItem_jadual);
 		// };
 	
-echo '<script>window.location="jadual.php?sukses=tambah-data"</script>';
+		echo '<script>window.location="jadual.php?sukses=tambah-data"</script>';
 	}
 
 	public function saveJadual_kontraktor($POST) {

@@ -20,6 +20,7 @@ File Konfigurasi koneksi :
     C. tampil  => semi-native
     D. talikuat => semi-native
     E. loghistory => semi-native
+    F. model => native
 
 Jika data umum tidak muncul tambahkan perintah berikut : 
 SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
