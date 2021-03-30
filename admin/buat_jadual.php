@@ -328,7 +328,8 @@ $log_write = $log->recordLog($menu);
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Pilih SUP</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control" id="sup" name="sup" value="<?php echo $data['nama_sup']; ?>" required="required" readonly>
+                  <input type="text" class="form-control" id="supname" name="supname" value="<?php echo $data['nama_sup']; ?>" required="required" readonly>
+                  <input type="hidden" class="form-control" id="sup" name="sup" value="<?= $data['idsup']; ?>" required="required" readonly>
                 </div>
               </div>
               <!-- End Bidang -->

@@ -211,6 +211,7 @@ class talikuat{
 			SELECT *,
 					data_umum.id AS datumid, 
 					utils_sup.nama AS nama_sup,
+					utils_sup.id AS idsup,
 		 			GROUP_CONCAT(" . $this->data_umum_ruas . ".ruas_jalan) as ruas_jalan 
 			FROM " . $this->data_umum . " 
 				JOIN " . $this->data_umum_ruas . " ON data_umum_ruas.id = " . $this->data_umum . ".id
@@ -227,7 +228,7 @@ class talikuat{
 		// die($sqlQuery);
 
 		$result = mysqli_query($this->dbConnect, $sqlQuery);
-		$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+		$row = mysqli_fetch_array($result);
 		return $row;
 	}
 
@@ -448,7 +449,7 @@ class talikuat{
 					" . $this->data_umum . ".id
 				DESC
 		"; 
-		// die($sqlQuery);
+		die($sqlQuery);
 
 		$result = mysqli_query($this->dbConnect, $sqlQuery);
 		$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
@@ -755,8 +756,8 @@ echo '<script>window.location="../kontraktor/data_umum.php?sukses=update-data"</
 		//==================================================================Jadual=========================================================================
 		$tgl = date("Y-m-d");
 		$sqlInsert = "
-			INSERT INTO " . $this->jadual . "(satuan,nama_ppk,unor,harga_satuan,volume,nilai_kontrak,jumlah_harga,bobot,id_data_umum,nmp,user,kegiatan,ruas_jalan,waktu_pelaksanaan,panjang,ppk,nama_penyedia,konsultan,tgl_input, tgl_update) 
-			VALUES ('" . $POST['satuan1'] . "','" . $POST['nama_ppk'] . "'," . $POST['id_unor'] . ",'" . $POST['harga_satuan1'] . "','" . $POST['volume1'] . "','" . $POST['nilai_kontrak'] . "','" . $POST['jumlah_harga1'] . "','" . $POST['bobot1'] . "','" . $POST['id_data_umum'] . "'," . $POST['nmp'] . ",'" . $POST['userId'] . "', '" . $POST['kegiatan'] . "', '" . $POST['ruas_jalan'] . "', " . $POST['waktu'] . ", '" . $POST['panjang'] . "','" . $POST['ppk'] . "', '" . $POST['nama_penyedia'] . "','" . $POST['konsultan'] . "', '" . $tgl . "', '0000-00-00')";
+			INSERT INTO " . $this->jadual . "(satuan,nama_ppk,unor,id_sup,harga_satuan,volume,nilai_kontrak,jumlah_harga,bobot,id_data_umum,nmp,user,kegiatan,ruas_jalan,waktu_pelaksanaan,panjang,ppk,nama_penyedia,konsultan,tgl_input, tgl_update) 
+			VALUES ('" . $POST['satuan1'] . "','" . $POST['nama_ppk'] . "'," . $POST['id_unor'] . "," . $POST['sup'] . ",'" . $POST['harga_satuan1'] . "','" . $POST['volume1'] . "','" . $POST['nilai_kontrak'] . "','" . $POST['jumlah_harga1'] . "','" . $POST['bobot1'] . "','" . $POST['id_data_umum'] . "'," . $POST['nmp'] . ",'" . $POST['userId'] . "', '" . $POST['kegiatan'] . "', '" . $POST['ruas_jalan'] . "', " . $POST['waktu'] . ", '" . $POST['panjang'] . "','" . $POST['ppk'] . "', '" . $POST['nama_penyedia'] . "','" . $POST['konsultan'] . "', '" . $tgl . "', '0000-00-00')";
 		// die($sqlInsert);
 		$jadual = mysqli_query($this->dbConnect, $sqlInsert);
 
