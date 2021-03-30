@@ -357,21 +357,30 @@ if (!empty($_POST['nama_kegiatan']) && $_POST['nama_kegiatan']) {
                     </div>
 
                     <div class="form-group row">
+                      <label class="col-sm-2 col-form-label">Pilih SUP</label>
+                      <div class="col-sm-10">
+                        <select name="sup" id="sup" class="form-control">
+                          <option value="0">Pilih SUP</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
                       <label class="col-sm-2 col-form-label">Kategori Paket Kegiatan</label>
                       <div class="col-sm-10">
                         <select name="kategori" id="unor" class="form-control select2" style="width:100%;" data-live-search="true">
                           <option value="0">Pilih Kategori Paket</option>
-                          <?php 
-                            $kategori = $talikuat->get_kategori_paket();
+                          <?php
+                          $kategori = $talikuat->get_kategori_paket();
 
-                            foreach($kategori as $k) {
+                          foreach ($kategori as $k) {
                           ?>
                             <option value="<?= $k['id']; ?>"><?= $k['nama_kategori']; ?></option>
                           <?php } ?>
                         </select>
                       </div>
-                    </div>                          
-                    
+                    </div>
+
                     <div class="form-group row">
                       <label class="col-sm-2 col-form-label">Nama Kegiatan / Paket</label>
                       <div class="col-sm-10">
@@ -387,7 +396,7 @@ if (!empty($_POST['nama_kegiatan']) && $_POST['nama_kegiatan']) {
                       <div class="card-body">
                         <div class="input-group input-group-sm">
 
-                          <select id="ruas_jalan" class="select2 form-control" style="width:90%" data-live-search="true">
+                          <select name="ruas_jalan" id="ruas_jalan" class="select2 form-control" style="width:90%" data-live-search="true">
                             <option value="0">Ruas Jalan</option>
                             <?php
                             foreach ($itemRuas_jalan as $ruas_jalan) {
@@ -702,6 +711,10 @@ if (!empty($_POST['nama_kegiatan']) && $_POST['nama_kegiatan']) {
   <!-- Bootstrap 4 -->
   <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+  <!-- Chained Dropdown Unor -->
+  <script src="../js/chained_data_umum_ruas.js"></script>
+  <!-- Chained Dropdown Ruas -->
+  <script src="../js/chained_ruas_jalan.js"></script>
   <!-- Select2 -->
   <script src="../plugins/select2/js/select2.full.min.js"></script>
   <!-- ChartJS -->

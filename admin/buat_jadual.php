@@ -33,9 +33,10 @@ $itemList = $controller->itemList();
 
 $jadual = $talikuat->get_all_jadual();
 
-if (!empty($_GET['data_umum']) && $_GET['data_umum']) {
-  $data = $talikuat->get_data_umum($_GET['data_umum']);
-  $data_detail = $talikuat->get_data_umum_detail($_GET['data_umum']);
+if (!empty($_GET['id_data_umum']) && $_GET['id_data_umum']) {
+  $data = $talikuat->get_data_umum_as($_GET['id_data_umum']);
+  $sup = $talikuat->sup_kantor($_GET['kantor']);
+  $data_detail = $talikuat->get_data_umum_detail($_GET['id_data_umum']);
 }
 if (!empty($_POST['panjang']) && $_POST['panjang']) {
   $talikuat->saveJadual($_POST);
@@ -309,69 +310,64 @@ $log_write = $log->recordLog($menu);
             </div>
             <div class="card-body">
 
-
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Kegiatan / Paket</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control" id="kegiatan" name="kegiatan" value="<?php echo $data['nama_kegiatan']; ?>" required="required">
+                  <input type="text" class="form-control" id="kegiatan" name="kegiatan" value="<?php echo $data['nama_kegiatan']; ?>" required="required" readonly>
+                </div>
+              </div>
+
+              <!-- Bidang -->
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Unor</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="unor" name="unor" value="<?php echo $data['nama_kantor']; ?>" required="required" readonly>
+                  <input type="hidden" class="form-control" id="unor" name="id_unor" value="<?php echo $data['id_kantor']; ?>" required="required" readonly>
                 </div>
               </div>
               <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Pilih SUP</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="sup" name="sup" value="<?php echo $data['nama_sup']; ?>" required="required" readonly>
+                </div>
+              </div>
+              <!-- End Bidang -->
+
+              <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Ruas Jalan</label>
                 <div class="col-sm-10">
-                  <select name="ruas_jalan" id="ruas_jalan" class="form-control select2" style="width:100%;" data-live-search="true">
-                    <?php
-                    $ruas = $talikuat->list_ruas_jalan();
-                    foreach ($ruas as $rj) {
-                      if ($data['unor'] == $rj['id']) {
-                    ?>
-                        <option value="<?= $rj['id']; ?>" selected><?= $rj['ruas_jalan']; ?></option>
-                      <?php
-                      } else {
-                      ?>
-                        <option value="<?= $rj['id']; ?>"><?= $rj['ruas_jalan']; ?></option>
-                    <?php }
-                    } ?>
-                  </select>
-                  <!-- <input type="text" class="form-control" id="ruas_jalan" name="ruas_jalan" value="<?php echo $data_detail['ruas_jalan']; ?>" required="required"> -->
+                  <input type="text" class="form-control" id="ruas_jalan" name="ruas_jalan" value="<?php echo $data_detail['ruas_jalan']; ?>" required="required" readonly>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Waktu Pelaksanaan</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="waktu" name="waktu" value="<?php echo $data['waktu_pelaksanaan']; ?>" required="required">
+                  <input type="text" class="form-control" id="waktu" name="waktu" value="<?php echo $data['waktu_pelaksanaan']; ?>" required="required" readonly>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Panjang</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control" id="panjang" name="panjang" value="<?php echo $data['panjang']; ?> Km" required="required">
+                  <input type="text" class="form-control" id="panjang" name="panjang" value="<?php echo $data['panjang']; ?> Km" required="required" readonly>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">PPK Kegiatan</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control" id="ppk" name="ppk" value="<?php echo $data['ppk']; ?>" required="required">
+                  <input type="text" class="form-control" id="ppk" name="ppk" value="<?php echo $data['ppk']; ?>" required="required" readonly>
                   <input type="hidden" class="form-control" id="nama_ppk" name="nama_ppk" value="<?php echo $data['nama_ppk']; ?>">
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Nama Penyedia Jasa</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control" id="nama_penyedia" name="nama_penyedia" value="<?php echo $data['penyedia_jasa']; ?>" required="required">
+                  <input type="text" class="form-control" id="nama_penyedia" name="nama_penyedia" value="<?php echo $data['penyedia_jasa']; ?>" required="required" readonly>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Nama Konsultan Supervisi</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control" id="konsultan" name="konsultan" value="<?php echo $data['konsultan_supervisi']; ?>" required="required">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Unor</label>
-                <div class="col-sm-10">
-                  <input type="hidden" class="form-control" id="unor" name="id_unor" value="<?php echo $data['id_kantor']; ?>" required="required">
-                  <input type="text" class="form-control" id="unor" name="unor" value="<?php echo $data['nama_kantor']; ?>" required="required" readonly>
+                  <input type="text" class="form-control" id="konsultan" name="konsultan" value="<?php echo $data['konsultan_supervisi']; ?>" required="required" readonly>
                 </div>
               </div>
 
@@ -500,33 +496,6 @@ $log_write = $log->recordLog($menu);
               </div>
             </div>
             <div class="card-body">
-              <div class="form-group">
-                <?php
-                if (isset($_GET['msg']) == "kosong") {
-                  echo "<script>alert('Silahkan Pilih Nama kegiatan/paket dulu kang...');</script>";
-                }
-                ?>
-                <label for="jadual">Kegiatan/Paket</label>
-                <?php
-                  $kegiatan = $talikuat->by_jadual($data['nama_kegiatan']);
-                  foreach ($kegiatan as $k) {
-                    ?>
-                    <!-- <input type="text" class="form-control" value="<?//= $k['kegiatan']; ?>" readonly> -->
-                  <!-- <input type="text" name="jadual" value="<?//= $k['id']; ?>"> -->
-                <?php } ?>
-                <?php  ?>
-                <select name="jadual" class="required form-control" id="jadual" required="required" readonly>
-                  <!-- <option value="0">Pilih Kegiatan/Paket</option> -->
-                  <?php
-                  foreach ($jadual as $ldt) {
-                    if($ldt['kegiatan'] == $data['kegiatan']) {
-                  ?>
-                    <option value="<?= $ldt['id']; ?>" selected><?= $ldt['kegiatan']; ?></option>
-                  <?php 
-                    } }
-                  ?>
-                </select>
-              </div>
               <div class="table-responsive">
                 <table class="table table-bordered table-hover " id="invoiceItem7">
                   <thead>
@@ -609,6 +578,8 @@ $log_write = $log->recordLog($menu);
   <script src="../plugins/jquery/jquery.min.js"></script>
   <!-- jQuery UI 1.11.4 -->
   <script src="../plugins/jquery-ui/jquery-ui.min.js"></script>
+  <!-- JS Chained Dropdown -->
+  <!-- <script src="../js/chained_ruas_jalan.js"></script> -->
   <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
   <script>
     $.widget.bridge('uibutton', $.ui.button)

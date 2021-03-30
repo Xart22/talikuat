@@ -202,8 +202,33 @@ class talikuat{
 					" . $this->data_umum . ".id
 				DESC
 		";
-			// die($sqlQuery); 
+		// die($sqlQuery); 
 		return $this->getData($sqlQuery);
+	}
+
+	public function get_data_umum_as($id_data_umum) {
+		$sqlQuery = "
+			SELECT *,
+					data_umum.id AS datumid, 
+					utils_sup.nama AS nama_sup,
+		 			GROUP_CONCAT(" . $this->data_umum_ruas . ".ruas_jalan) as ruas_jalan 
+			FROM " . $this->data_umum . " 
+				JOIN " . $this->data_umum_ruas . " ON data_umum_ruas.id = " . $this->data_umum . ".id
+				JOIN " . $this->kategori_paket . " ON kategori_paket.id = " . $this->data_umum . ".kategori
+				JOIN " . $this->kantor . " ON " . $this->kantor . ".id_kantor = " . $this->data_umum . ".unor
+				JOIN utils_sup ON utils_sup.id = data_umum.id_sup 
+				WHERE " . $this->data_umum . ".id = " .$id_data_umum. "
+				GROUP BY
+					" . $this->data_umum . ".id 
+				ORDER BY 
+					" . $this->data_umum . ".id
+				DESC
+		";
+		// die($sqlQuery);
+
+		$result = mysqli_query($this->dbConnect, $sqlQuery);
+		$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+		return $row;
 	}
 
 //---------------power kontraktor-------------------
@@ -422,11 +447,19 @@ class talikuat{
 				ORDER BY 
 					" . $this->data_umum . ".id
 				DESC
-		";
+		"; 
+		// die($sqlQuery);
 
 		$result = mysqli_query($this->dbConnect, $sqlQuery);
 		$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
 		return $row;
+	}
+
+	public function sup_kantor($unor) {
+		$sqlQuery = "SELECT utils_sup.id AS sup_id, utils_sup.nama FROM utils_sup JOIN kantor ON kantor.id_kantor = utils_sup.kantor_id WHERE kantor.id_kantor = " . $unor;
+
+		$result = mysqli_query($this->dbConnect, $sqlQuery);
+		return $result;		
 	}
 
 	public function get_data_umum_detail($detail){
@@ -540,9 +573,9 @@ class talikuat{
 
 		
 		$sqlInsert = "
-			INSERT INTO ".$this->data_umum. "(pemda,opd,unor,kategori,nama_kegiatan,no_kontrak,tgl_kontrak,nilai_kontrak,no_spmk,tgl_spmk,panjang,
+			INSERT INTO ".$this->data_umum. "(pemda,opd,unor,id_sup,id_ruas_jalan,kategori,nama_kegiatan,no_kontrak,tgl_kontrak,nilai_kontrak,no_spmk,tgl_spmk,panjang,
 			waktu_pelaksanaan,ppk,penyedia_jasa,konsultan_supervisi,nama_ppk,nama_se,nama_gs,rab,pk,sk,sm,ul_spmk,ul_jadual,ul_rencana,tgl_input,user,pagu_anggaran) 
-			VALUES ('".$POST['pemda']."', '".$POST['opd']."', ".$POST['unor'].", ".$POST['kategori'].",'".$POST['nama_kegiatan']."', '".$POST['no_kontrak']."',
+			VALUES ('".$POST['pemda']."', '".$POST['opd']."', ".$POST['unor'].", ".$POST['sup']. ", " . $POST['ruas_jalan'] . ", ".$POST['kategori'].",'".$POST['nama_kegiatan']."', '".$POST['no_kontrak']."',
 			'".$POST['tgl_kontrak']."', 
 			'".$POST['nilai_kontrak']."','".$POST['no_spmk']."','".$POST['tgl_spmk']."','".$POST['panjang']."','".$POST['waktu_pelaksanaan']."','".$POST['ppk']."',
 			'".$POST['penyedia_jasa']."','".$POST['konsultan']."','".$POST['nama_ppk']."','".$POST['nama_se']."','".$POST['nama_gs']. "','".$rabbaru."',
@@ -716,9 +749,10 @@ public function updateDataUmum_kontraktor($POST) {
 		}
 echo '<script>window.location="../kontraktor/data_umum.php?sukses=update-data"</script>';
 	}
-//=======================================================================Simpan Jadual
-	public function saveJadual($POST) {
-//==================================================================Jadual=========================================================================
+	//=======================================================================Simpan Jadual
+	public function saveJadual($POST)
+	{
+		//==================================================================Jadual=========================================================================
 		$tgl = date("Y-m-d");
 		$sqlInsert = "
 			INSERT INTO " . $this->jadual . "(satuan,nama_ppk,unor,harga_satuan,volume,nilai_kontrak,jumlah_harga,bobot,id_data_umum,nmp,user,kegiatan,ruas_jalan,waktu_pelaksanaan,panjang,ppk,nama_penyedia,konsultan,tgl_input, tgl_update) 
@@ -726,7 +760,7 @@ echo '<script>window.location="../kontraktor/data_umum.php?sukses=update-data"</
 		// die($sqlInsert);
 		$jadual = mysqli_query($this->dbConnect, $sqlInsert);
 
-//==================================================================Detail Jadual=========================================================================
+		//==================================================================Detail Jadual=========================================================================
 		//do something with code...;
 		$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
 
@@ -781,17 +815,17 @@ echo '<script>window.location="../kontraktor/data_umum.php?sukses=update-data"</
 		// 	VALUES ('".$POST['satuan1']."','".$POST['nama_ppk']."','".$POST['unor']."','".$POST['harga_satuan1']."','".$POST['volume1']."','".$POST['nilai_kontrak']."','".$POST['jumlah_harga1']."','".$POST['bobot1']."','".$POST['id_data_umum']."','".$POST['nmp']."','".$POST['userId']."', '".$POST['kegiatan']."', '".$POST['ruas_jalan']."', '".$POST['waktu']."', '".$POST['panjang']."','".$POST['ppk']."', '".$POST['nama_penyedia']."','".$POST['konsultan']."', '".$tgl."')";		
 		// mysqli_query($this->dbConnect, $sqlInsert);
 		// die($sqlInsert);
-//==================================================================Detail Jadual=========================================================================		
+		//==================================================================Detail Jadual=========================================================================		
 		$lastInsertId = mysqli_insert_id($this->dbConnect);
-		
-		
+
+
 		// for ($i = 0; $i < count($POST['nmp']); $i++) {
 		// 	$sqlInsertItem_jadual = "
 		// 	INSERT INTO ".$this->jadual_detail."(id,tgl,nmp,uraian,satuan,harga_satuan,volume,jumlah_harga,bobot,koefisien,nilai) 
 		// 	VALUES ('".$lastInsertId."', '".$POST['tgl'][$i]."', '".$POST['nmp'][$i]."', '".$POST['uraian'][$i]."', '".$POST['satuan'][$i]."', '".$POST['harga_satuan'][$i]."', '".$POST['volume'][$i]."', '".$POST['jumlah_harga'][$i]."', '".$POST['bobot'][$i]."', '".$POST['koefisien'][$i]."', '".$POST['nilai'][$i]."')";				
 		// 	mysqli_query($this->dbConnect, $sqlInsertItem_jadual);
 		// };
-	
+
 		echo '<script>window.location="jadual.php?sukses=tambah-data"</script>';
 	}
 

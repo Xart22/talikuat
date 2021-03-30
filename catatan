@@ -1,4 +1,9 @@
-1. Prioritas : 
+1. Penting!!! Perhatian
+
+Setiap pembaruan fitur mohon untuk diimportkan database talikuat dengan nama (dbsik22-Mar-2021-Senin) versi stable di folder mysql
+**: Penambahan pada data utils sup di data umum
+
+2. Prioritas : 
     A. Kirim Disposisi
         - Untuk kirim disposisi pada field disposisikan kepada itu mengirim ke email dan menginsertkan datanya ke database
     Serta buat history Untuk proses kirim disposisi diatas.
@@ -10,7 +15,7 @@
         - Rincian
         - Rincian Accept
         
-2. Lanjutan : 
+3. Lanjutan : 
     Untuk A.disposisi masuk dan B.tindak lanjut hanya dimiliki oleh atasan yang bertanggung jawab (Untuk sementara digabungkan)
 C.disposisi instruksi dan D.kirim disposisi serta A & B dimiliki oleh admin
 

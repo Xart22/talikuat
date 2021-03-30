@@ -226,7 +226,7 @@ $menu = "Data Umum";
 
                           <a href="edit_data_umum.php?data_umum=<?php echo $isi['datumid']; ?>"><span class="nav-icon fas fa-edit" style="color:red" title="Ubah Data">&nbsp;</span></a>
                           <a href="#" onclick="javascript:return confirm('Hapus Data ?');"><span class="glyphicon glyphicon-remove-sign" style="color:red;font-size:18px" title="Hapus Data">&nbsp;</span></a>
-                          <a href="buat_jadual.php?data_umum=<?php echo $isi['datumid']; ?>"><span class="nav-icon fas fa-calendar" title="Buat Jadual">&nbsp;</span></a>
+                          <a href="buat_jadual.php?id_data_umum=<?php echo $isi['datumid']; ?>&kantor=<?= $isi['unor'] ?>"><span class="nav-icon fas fa-calendar" title="Buat Jadual">&nbsp;</span></a>
                         </td>
                       </tr>
                     <?php $no++;

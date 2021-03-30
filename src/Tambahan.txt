@@ -1,3 +1,0 @@
-File Query ada di src/talikuat.php
-laporan_pekerjaan.php untuk redirect ke proses print di admin/laporan_pekerjaan
-template laporan print ada di print_lap_pekerjaan.php
